@@ -1,0 +1,242 @@
+openapi: 3.0.1
+info:
+  title: Doctors Service
+  description: Doctors Service
+  version: v1
+servers:
+  - url: http://localhost:8080
+    description: Local Dev Server
+paths:
+  /Doctors/getAll:
+    get:
+      tags:
+        - Doctors
+      parameters:
+        - $ref: "#/components/parameters/limitParam"
+        - $ref: "#/components/parameters/directionParam"
+        - $ref: "#/components/parameters/sortByFieldParam"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DoctorsPagedResultDto"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          $ref: "#/components/responses/ResourceNotFoundError"
+  /Doctors/get:
+    get:
+      tags:
+        - Doctors
+      parameters:
+        - $ref: "#/components/parameters/idParam"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DoctorsDto"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          $ref: "#/components/responses/ResourceNotFoundError"
+        "422":
+          $ref: "#/components/responses/UnAcceptableInputs"
+  /Doctors/create:
+    post:
+      tags:
+        - Doctors
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DoctorsDto"
+      responses:
+        "201":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DoctorsDto"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          $ref: "#/components/responses/ResourceNotFoundError"
+        "422":
+          $ref: "#/components/responses/UnAcceptableInputs"
+  /Doctors/update:
+    put:
+      tags:
+        - Doctors
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DoctorsDto"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DoctorsDto"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          $ref: "#/components/responses/ResourceNotFoundError"
+        "422":
+          $ref: "#/components/responses/UnAcceptableInputs"
+  /Doctors/delete:
+    delete:
+      tags:
+        - Doctors
+      parameters:
+        - $ref: "#/components/parameters/idParam"
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          $ref: "#/components/responses/ResourceNotFoundError"
+        "422":
+          $ref: "#/components/responses/UnAcceptableInputs"
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  parameters:
+    idParam:
+      name: uId
+      in: query
+      required: true
+      schema:
+        type: string
+    limitParam:
+      name: Limit
+      in: query
+      schema:
+        type: integer
+        nullable: true
+    directionParam:
+      name: Direction
+      in: query
+      schema:
+        type: string
+        enum:
+          - asc
+          - desc
+        default: asc
+    sortByFieldParam:
+      name: SortByField
+      in: query
+      schema:
+        type: string
+        nullable: true
+  responses:
+    Success:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/MessageDto"
+    UnauthorizedError:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/MessageDto"
+    ResourceNotFoundError:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/MessageDto"
+    UnAcceptableInputs:
+      description: Invalid Inputs
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/MessageDto"
+
+
+
+            
+  schemas:
+    MessageDto:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+    DoctorsPagedResultDto:
+      type: object
+      properties:
+        totalCount:
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/DoctorsDto"
+    DoctorsDto:
+      type: object
+      properties:
+        fullName:
+          type: string
+        email:
+          type: string
+          format: email
+        line1:
+          type: string
+        line2:
+          type: string
+        phoneNumber:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+        uId:
+          type: string
+        imageUrl:
+          type: string
+        isExist:
+          type: boolean
+        speciality:
+          type: string
+        medicalInformation:
+          type: string
+        gender:
+          type: string
+          enum:
+            - Male
+            - Female
+            - Others
+        likes: 
+          type: string
+        review:
+          type: number
+        experience:
+          type: string
+        post:
+          type: number
+        summmary:
+          type: string
+        connectyCubeId:
+          type: integer
+
+
+          
+      required:
+        - fullName
+        - email
+        - line1
+        - line2
+        - phoneNumber
+        - dateOfBirth
+        - imageUrl
+        - speciality
